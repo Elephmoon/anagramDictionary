@@ -1,4 +1,4 @@
-package dictionary
+package word
 
 type Usecase interface {
 	ShowDictionary(offset, limit int) ([]string, error)
