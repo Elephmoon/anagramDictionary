@@ -22,10 +22,8 @@ type QueryParams struct {
 	Limit  int
 }
 
-type HttpResp struct {
-	Success bool        `json:"success"`
-	Error   string      `json:"error,omitempty"`
-	Data    interface{} `json:"data,omitempty"`
+type HttpErrorResponse struct {
+	Error string `json:"error"`
 }
 
 func GetQueryParams(offset, limit string) (*QueryParams, error) {
@@ -60,26 +58,14 @@ func SortWord(word string) string {
 }
 
 func GenerateHttpErrorResp(w http.ResponseWriter, err error) error {
-	resp, err := GenerateHttpResp(false, err, nil)
-	if err != nil {
-		return err
-	}
-	err = json.NewEncoder(w).Encode(resp)
-	if err != nil {
-		return err
+	rsp := HttpErrorResponse{
+		Error: err.Error(),
 	}
 	w.Header().Add("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(rsp)
+	if err != nil {
+		return err
+	}
 	w.WriteHeader(http.StatusBadRequest)
 	return nil
-}
-
-func GenerateHttpResp(success bool, err error, data interface{}) ([]byte, error) {
-	httpResp := HttpResp{
-		Success: success,
-		Data:    data,
-	}
-	if err != nil {
-		httpResp.Error = err.Error()
-	}
-	return json.Marshal(httpResp)
 }

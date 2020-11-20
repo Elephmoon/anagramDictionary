@@ -37,18 +37,12 @@ func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	resp, err := helpers.GenerateHttpResp(true, nil, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(resp)
+	err = json.NewEncoder(w).Encode(data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func (wh *WordHandler) delete(w http.ResponseWriter, r *http.Request) {
