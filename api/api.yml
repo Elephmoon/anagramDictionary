@@ -1,0 +1,143 @@
+openapi: 3.0.1
+info:
+  title: AnagramDictionary API
+  description: This is a AnagramDictionary Server API.
+  contact:
+    email: alexandr.kizilow@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://{{.Host}}:{{.Port}}/api/v1
+
+paths:
+  /words:
+    get:
+      tags:
+        - Words
+      summary: returns dictionary with words
+      parameters:
+        - name: offset
+          in: query
+          description: number of records to skip
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: limit
+          in: query
+          description: max number of records to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+      responses:
+        200:
+          description: returns dictionary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WordsList'
+        400:
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        500:
+          description: internal server error
+          content: { }
+    post:
+      tags:
+        - Words
+      summary: creates dictionary
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WordCreateRequest'
+        required: true
+      responses:
+        201:
+          description: sucess
+          content: { }
+        400:
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        500:
+          description: internal server error
+          content: { }
+
+  /words/{word}:
+    delete:
+      tags:
+        - Words
+      summary: delete word from dictionary
+      parameters:
+        - name: word
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: sucessfully delete
+          content: { }
+        400:
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        500:
+          description: internal server error
+          content: { }
+
+components:
+  schemas:
+    ErrorMessage:
+      required:
+        - error
+      type: object
+      description: Structure return with BadRequest
+      properties:
+        error:
+          type: string
+          description: Information about error
+          example: Not found
+    WordCreateRequest:
+      type: object
+      description: Structure for creating word
+      properties:
+        words:
+          type: array
+          items:
+            type: string
+    WordsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/WordsGet'
+    WordsGet:
+      required:
+        - word
+        - sortedWord
+        - createdAt
+        - updatedAt
+      type: object
+      description: Structure which contains information about word
+      properties:
+        word:
+          type: string
+          description: word
+          example: love
+        sortedWord:
+          type: string
+          description: need fo annagram search
+          example: elov
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
