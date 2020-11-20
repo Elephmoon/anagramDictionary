@@ -1,3 +1,4 @@
+.env
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -12,4 +13,4 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
