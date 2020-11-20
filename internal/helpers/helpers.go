@@ -1,7 +1,52 @@
 package helpers
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
+	"sort"
+	"strconv"
+	"strings"
+)
+
+const (
+	defaultLimit = 50
+)
 
 var (
 	ErrRecordNotFound = errors.New("record not found")
 )
+
+type QueryParams struct {
+	Offset int
+	Limit  int
+}
+
+func GetQueryParams(offset, limit string) (*QueryParams, error) {
+	var (
+		off, lim int
+		err      error
+	)
+	if offset != "" {
+		off, err = strconv.Atoi(offset)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if limit == "" {
+		lim = defaultLimit
+	} else {
+		lim, err = strconv.Atoi(limit)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return &QueryParams{
+		Offset: off,
+		Limit:  lim,
+	}, nil
+}
+
+func SortWord(word string) string {
+	splitWord := strings.Split(word, "")
+	sort.Strings(splitWord)
+	return strings.Join(splitWord, "")
+}
