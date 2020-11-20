@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/Elephmoon/anagramDictionary/internal/backend/word"
 	"github.com/Elephmoon/anagramDictionary/internal/helpers"
 	"github.com/Elephmoon/anagramDictionary/internal/models"
@@ -22,7 +23,7 @@ func NewDictionaryRepo(dbConn *gorm.DB) word.Repository {
 
 func (wr *wordRepository) GetDictionary(offset, limit int) ([]*models.Word, error) {
 	dict := make([]*models.Word, 0)
-	err := wr.DBConn.Offset(offset).Limit(limit).Find(dict).Error
+	err := wr.DBConn.Offset(offset).Limit(limit).Find(&dict).Error
 	if err != nil {
 		return nil, wr.wrapError(err)
 	}
@@ -30,9 +31,11 @@ func (wr *wordRepository) GetDictionary(offset, limit int) ([]*models.Word, erro
 }
 
 func (wr *wordRepository) AddDictionary(words []models.Word) error {
-	err := wr.DBConn.Create(&words).Error
-	if err != nil {
-		return wr.wrapError(err)
+	for _, wrd := range words {
+		err := wr.DBConn.Create(&wrd).Error
+		if err != nil {
+			return wr.wrapError(errors.Wrap(err, fmt.Sprintf("word: %s", wrd.Word)))
+		}
 	}
 	return nil
 }
@@ -40,7 +43,7 @@ func (wr *wordRepository) AddDictionary(words []models.Word) error {
 func (wr *wordRepository) DeleteWord(word string) error {
 	wrd := models.Word{}
 	rowsAffected := wr.DBConn.Delete(wrd, "word = ?", word).RowsAffected
-	if rowsAffected != 0 {
+	if rowsAffected == 0 {
 		return wr.wrapError(helpers.ErrRecordNotFound)
 	}
 	return nil

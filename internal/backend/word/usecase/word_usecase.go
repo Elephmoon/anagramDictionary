@@ -31,9 +31,9 @@ func (wu *wordUsecase) DeleteWord(word string) error {
 
 func (wu *wordUsecase) AddWords(words []string) error {
 	wrds := make([]models.Word, len(words))
-	for i, wrd := range wrds {
-		wrd.Word = words[i]
-		wrd.SortedWord = helpers.SortWord(strings.ToLower(words[i]))
+	for i, wrd := range words {
+		wrds[i].Word = words[i]
+		wrds[i].SortedWord = helpers.SortWord(strings.ToLower(wrd))
 	}
 	return wu.wordRepo.AddDictionary(wrds)
 }
