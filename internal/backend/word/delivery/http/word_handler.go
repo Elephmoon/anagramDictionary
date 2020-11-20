@@ -13,7 +13,7 @@ type WordHandler struct {
 	WordUsecase word.Usecase
 }
 
-func NewWordUsecase(router *mux.Router, wordUsecase word.Usecase) {
+func NewWordHandler(router *mux.Router, wordUsecase word.Usecase) {
 	handler := WordHandler{
 		WordUsecase: wordUsecase,
 	}
