@@ -69,7 +69,7 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	err = wh.WordUsecase.AddWords(createReq.Words)
+	err = wh.WordUsecase.AddWords(createReq)
 	if err != nil {
 		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {

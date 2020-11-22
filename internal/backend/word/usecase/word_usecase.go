@@ -1,11 +1,15 @@
 package usecase
 
 import (
+	"errors"
 	"github.com/Elephmoon/anagramDictionary/internal/backend/word"
 	"github.com/Elephmoon/anagramDictionary/internal/helpers"
 	"github.com/Elephmoon/anagramDictionary/internal/models"
+	"github.com/go-playground/validator/v10"
 	"strings"
 )
+
+var errWordEmpty = errors.New("word cannot be empty")
 
 type wordUsecase struct {
 	wordRepo word.Repository
@@ -26,14 +30,26 @@ func (wu *wordUsecase) ShowDictionary(offset, limit string) ([]*models.Word, err
 }
 
 func (wu *wordUsecase) DeleteWord(word string) error {
+	if word == "" {
+		return errWordEmpty
+	}
 	return wu.wordRepo.DeleteWord(word)
 }
 
-func (wu *wordUsecase) AddWords(words []string) error {
-	wrds := make([]models.Word, len(words))
-	for i, wrd := range words {
-		wrds[i].Word = words[i]
+func (wu *wordUsecase) AddWords(words *models.CreateReq) error {
+	err := validateCreateReq(words)
+	if err != nil {
+		return err
+	}
+	wrds := make([]models.Word, len(words.Words))
+	for i, wrd := range words.Words {
+		wrds[i].Word = words.Words[i]
 		wrds[i].SortedWord = helpers.SortWord(strings.ToLower(wrd))
 	}
 	return wu.wordRepo.AddDictionary(wrds)
+}
+
+func validateCreateReq(words *models.CreateReq) error {
+	validate := validator.New()
+	return validate.Struct(words)
 }
