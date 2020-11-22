@@ -30,7 +30,7 @@ func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
 
 	data, err := wh.WordUsecase.ShowDictionary(offset, limit)
 	if err != nil {
-		err := helpers.GenerateHttpErrorResp(w, err)
+		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -48,7 +48,7 @@ func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
 func (wh *WordHandler) delete(w http.ResponseWriter, r *http.Request) {
 	err := wh.WordUsecase.DeleteWord(mux.Vars(r)["word"])
 	if err != nil {
-		err := helpers.GenerateHttpErrorResp(w, err)
+		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -62,7 +62,7 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 	createReq := &models.CreateReq{}
 	err := json.NewDecoder(r.Body).Decode(createReq)
 	if err != nil {
-		err := helpers.GenerateHttpErrorResp(w, err)
+		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -71,7 +71,7 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 	}
 	err = wh.WordUsecase.AddWords(createReq.Words)
 	if err != nil {
-		err := helpers.GenerateHttpErrorResp(w, err)
+		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
