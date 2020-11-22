@@ -8,7 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func InitApiRoutes(router *mux.Router, dbConn *gorm.DB) {
+func InitAPIRoutes(router *mux.Router, dbConn *gorm.DB) {
 	wordRepo := wordrepo.NewDictionaryRepo(dbConn)
 	wordUsecasee := worducase.NewWordUsecase(wordRepo)
 

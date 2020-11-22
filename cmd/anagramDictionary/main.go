@@ -24,7 +24,7 @@ func main() {
 	router.PathPrefix("/swagger-ui/").Handler(swag)
 	router.HandleFunc("/api.yml", initSwaggerSpec(conf.APIConfig))
 	apiRouter := router.PathPrefix("/api/v1").Subrouter()
-	routes.InitApiRoutes(apiRouter, dbConn)
+	routes.InitAPIRoutes(apiRouter, dbConn)
 	addr := fmt.Sprintf(":%s", conf.APIConfig.Port)
 	panic(http.ListenAndServe(addr, router))
 }

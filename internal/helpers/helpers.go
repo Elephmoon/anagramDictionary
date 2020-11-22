@@ -22,7 +22,7 @@ type QueryParams struct {
 	Limit  int
 }
 
-type HttpErrorResponse struct {
+type HTTPErrorResponse struct {
 	Error string `json:"error"`
 }
 
@@ -57,8 +57,8 @@ func SortWord(word string) string {
 	return strings.Join(splitWord, "")
 }
 
-func GenerateHttpErrorResp(w http.ResponseWriter, err error) error {
-	rsp := HttpErrorResponse{
+func GenerateHTTPErrorResp(w http.ResponseWriter, err error) error {
+	rsp := HTTPErrorResponse{
 		Error: err.Error(),
 	}
 	w.Header().Add("Content-Type", "application/json")
