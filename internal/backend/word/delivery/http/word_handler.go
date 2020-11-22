@@ -19,9 +19,9 @@ func NewWordHandler(router *mux.Router, wordUsecase word.Usecase) {
 	}
 	wordSubRouter := router.PathPrefix("/words").Subrouter()
 	wordSubRouter.HandleFunc("", handler.get).Methods("GET")
-	wordSubRouter.HandleFunc("/{word}", handler.delete).Methods("DELETE")
+	wordSubRouter.HandleFunc("", handler.delete).Methods("DELETE")
 	wordSubRouter.HandleFunc("", handler.addWords).Methods("POST")
-	wordSubRouter.HandleFunc("/{word}", handler.searchAnagram).Methods("GET")
+	wordSubRouter.HandleFunc("/anagrams", handler.searchAnagram).Methods("GET")
 }
 
 func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
@@ -43,11 +43,10 @@ func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 func (wh *WordHandler) delete(w http.ResponseWriter, r *http.Request) {
-	err := wh.WordUsecase.DeleteWord(mux.Vars(r)["word"])
+	err := wh.WordUsecase.DeleteWord(r.URL.Query().Get("word"))
 	if err != nil {
 		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
@@ -56,7 +55,7 @@ func (wh *WordHandler) delete(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
@@ -79,11 +78,11 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (wh *WordHandler) searchAnagram(w http.ResponseWriter, r *http.Request) {
-	anagramResponse, err := wh.WordUsecase.AnagramSearch(mux.Vars(r)["word"])
+	anagramResponse, err := wh.WordUsecase.AnagramSearch(r.URL.Query().Get("word"))
 	if err != nil {
 		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
@@ -98,5 +97,4 @@ func (wh *WordHandler) searchAnagram(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }

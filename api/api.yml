@@ -48,7 +48,7 @@ paths:
     post:
       tags:
         - Words
-      summary: creates dictionary
+      summary: add word in dictionary
       requestBody:
         content:
           application/json:
@@ -57,7 +57,30 @@ paths:
         required: true
       responses:
         201:
-          description: sucess
+          description: sucessfuly added
+          content: { }
+        400:
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        500:
+          description: internal server error
+          content: { }
+    delete:
+      tags:
+        - Words
+      summary: delete word from dictionary
+      parameters:
+        - name: word
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: sucessfully delete
           content: { }
         400:
           description: bad request
@@ -69,21 +92,25 @@ paths:
           description: internal server error
           content: { }
 
-  /words/{word}:
-    delete:
+  /words/anagrams:
+    get:
       tags:
         - Words
-      summary: delete word from dictionary
+      summary: returns anagrams for word
       parameters:
         - name: word
-          in: path
-          required: true
+          in: query
+          description: serached word
           schema:
             type: string
+          required: true
       responses:
-        204:
-          description: sucessfully delete
-          content: { }
+        200:
+          description: returns word with anagrams
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnagramResponse'
         400:
           description: bad request
           content:
@@ -141,3 +168,13 @@ components:
         updatedAt:
           type: string
           format: date-time
+    AnagramResponse:
+      type: object
+      description: Structure with searched word and annagrams
+      properties:
+        word:
+          type: string
+        anagrams:
+          type: array
+          items:
+            type: string
