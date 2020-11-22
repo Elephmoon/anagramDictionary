@@ -49,6 +49,29 @@ func (wu *wordUsecase) AddWords(words *models.CreateReq) error {
 	return wu.wordRepo.AddDictionary(wrds)
 }
 
+func (wu *wordUsecase) AnagramSearch(word string) (models.AnagramResponse, error) {
+	var answer models.AnagramResponse
+	if word == "" {
+		return answer, errWordEmpty
+	}
+	words, err := wu.wordRepo.AnagramSearch(helpers.SortWord(word))
+	if err != nil {
+		return answer, err
+	}
+	return generateAnagramResponse(word, words), nil
+}
+
+func generateAnagramResponse(searchWord string, words []*models.Word) models.AnagramResponse {
+	anagrams := make([]string, len(words))
+	for i, wrd := range words {
+		anagrams[i] = wrd.Word
+	}
+	return models.AnagramResponse{
+		Word:     searchWord,
+		Anagrams: anagrams,
+	}
+}
+
 func validateCreateReq(words *models.CreateReq) error {
 	validate := validator.New()
 	return validate.Struct(words)

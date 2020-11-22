@@ -49,6 +49,15 @@ func (wr *wordRepository) DeleteWord(word string) error {
 	return nil
 }
 
+func (wr *wordRepository) AnagramSearch(sortedWord string) ([]*models.Word, error) {
+	wrds := make([]*models.Word, 0)
+	err := wr.DBConn.Where("sorted_word = ?", sortedWord).Find(wrds).Error
+	if err != nil {
+		return nil, wr.wrapError(err)
+	}
+	return wrds, nil
+}
+
 func (wr *wordRepository) wrapError(err error) error {
 	return errors.Wrap(err, wr.TableName)
 }
