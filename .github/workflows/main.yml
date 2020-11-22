@@ -1,0 +1,93 @@
+name: Lint, test, upload
+
+on:
+  push:
+    branches:
+
+jobs:
+  deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.14'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build deps
+        run: go mod vendor
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: vendor
+          path: vendor
+
+  lint:
+    needs: [ deps ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.14'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: vendor
+
+      - name: Lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.26.0
+
+          golangci-lint run
+
+  test:
+    needs: [ deps ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.14'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: vendor
+
+      - name: Test
+        run: go test ./...
+
+  build-branch:
+    needs: [ deps, lint, test ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: vendor
+
+      - name: Extract branch name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Build image and Push to ghcr
+        uses: manusa/actions-publish-docker@v1.1.1
+        with:
+          name: sulimak-co/lorawan-as
+          username: ${{ github.repository_owner }}}
+          password: ${{ secrets.SECRET_TOKEN }}
+          registry: ghcr.io
+          tag: ${{ env.BRANCH_NAME }}
