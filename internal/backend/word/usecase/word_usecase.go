@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 	"github.com/Elephmoon/anagramDictionary/internal/backend/word"
 	"github.com/Elephmoon/anagramDictionary/internal/helpers"
 	"github.com/Elephmoon/anagramDictionary/internal/models"
@@ -9,7 +10,14 @@ import (
 	"strings"
 )
 
-var errWordEmpty = errors.New("word cannot be empty")
+const (
+	maxWordsLen        = 100
+	errExceedLenFormat = "max length words is %d"
+)
+
+var (
+	errWordEmpty = errors.New("word cannot be empty")
+)
 
 type wordUsecase struct {
 	wordRepo word.Repository
@@ -49,7 +57,37 @@ func (wu *wordUsecase) AddWords(words *models.CreateReq) error {
 	return wu.wordRepo.AddDictionary(wrds)
 }
 
+func (wu *wordUsecase) AnagramSearch(word string) (models.AnagramResponse, error) {
+	var answer models.AnagramResponse
+	if word == "" {
+		return answer, errWordEmpty
+	}
+	words, err := wu.wordRepo.AnagramSearch(helpers.SortWord(word))
+	if err != nil {
+		return answer, err
+	}
+	return generateAnagramResponse(word, words), nil
+}
+
+func generateAnagramResponse(searchWord string, words []*models.Word) models.AnagramResponse {
+	anagrams := make([]string, len(words))
+	for i, wrd := range words {
+		anagrams[i] = wrd.Word
+	}
+	return models.AnagramResponse{
+		Word:     searchWord,
+		Anagrams: anagrams,
+	}
+}
+
 func validateCreateReq(words *models.CreateReq) error {
 	validate := validator.New()
-	return validate.Struct(words)
+	err := validate.Struct(words)
+	if err != nil {
+		return err
+	}
+	if len(words.Words) > maxWordsLen {
+		return fmt.Errorf(errExceedLenFormat, maxWordsLen)
+	}
+	return nil
 }
