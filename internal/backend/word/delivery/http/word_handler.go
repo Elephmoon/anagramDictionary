@@ -21,6 +21,7 @@ func NewWordHandler(router *mux.Router, wordUsecase word.Usecase) {
 	wordSubRouter.HandleFunc("", handler.get).Methods("GET")
 	wordSubRouter.HandleFunc("/{word}", handler.delete).Methods("DELETE")
 	wordSubRouter.HandleFunc("", handler.addWords).Methods("POST")
+	wordSubRouter.HandleFunc("/{word}", handler.searchAnagram).Methods("GET")
 }
 
 func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +38,7 @@ func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add(helpers.KeyContentType, helpers.JSONContentType)
 	err = json.NewEncoder(w).Encode(data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -76,6 +77,25 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (wh *WordHandler) searchAnagram(w http.ResponseWriter, r *http.Request) {
+	anagramResponse, err := wh.WordUsecase.AnagramSearch(mux.Vars(r)["word"])
+	if err != nil {
+		err := helpers.GenerateHTTPErrorResp(w, err)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		return
+	}
+	w.Header().Add(helpers.KeyContentType, helpers.JSONContentType)
+	err = json.NewEncoder(w).Encode(anagramResponse)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
