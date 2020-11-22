@@ -1,0 +1,32 @@
+linters:
+  enable-all: false
+  enable:
+    - deadcode
+    - errcheck
+    - goconst
+    - golint
+    - gofmt
+    - gosec
+    - govet
+    - ineffassign
+    - interfacer
+    - lll
+    - misspell
+    - nakedret
+    - structcheck
+    - unconvert
+    - varcheck
+  disable:
+    - staticcheck
+    - megacheck
+
+output:
+  # colored-line-number|line-number|json|tab|checkstyle|code-climate, default is "colored-line-number"
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: true
+
+run:
+  timeout: 5m
+  tests: false
