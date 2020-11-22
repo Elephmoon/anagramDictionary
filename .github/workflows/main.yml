@@ -86,7 +86,7 @@ jobs:
       - name: Build image and Push to ghcr
         uses: manusa/actions-publish-docker@v1.1.1
         with:
-          name: sulimak-co/lorawan-as
+          name: Elephmoon/anagramDictionary
           username: ${{ github.repository_owner }}}
           password: ${{ secrets.SECRET_TOKEN }}
           registry: ghcr.io
