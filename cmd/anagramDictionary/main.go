@@ -46,7 +46,7 @@ func initSwaggerSpec(conf config.APIConfig) http.HandlerFunc {
 			Host string
 			Port string
 		}{
-			Host: "localhost",
+			Host: conf.Host,
 			Port: conf.Port,
 		}
 		tmpl := template.Must(template.ParseFiles("./api/api.yml"))
