@@ -6,11 +6,12 @@ import (
 	worducase "github.com/Elephmoon/anagramDictionary/internal/backend/word/usecase"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"github.com/sirupsen/logrus"
 )
 
-func InitAPIRoutes(router *mux.Router, dbConn *gorm.DB) {
+func InitAPIRoutes(router *mux.Router, dbConn *gorm.DB, logger logrus.FieldLogger) {
 	wordRepo := wordrepo.NewDictionaryRepo(dbConn)
 	wordUsecasee := worducase.NewWordUsecase(wordRepo)
 
-	wordhttp.NewWordHandler(router, wordUsecasee)
+	wordhttp.NewWordHandler(router, wordUsecasee, logger)
 }

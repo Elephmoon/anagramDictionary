@@ -3,6 +3,7 @@ package helpers
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"sort"
 	"strconv"
@@ -70,4 +71,11 @@ func GenerateHTTPErrorResp(w http.ResponseWriter, err error) error {
 		return err
 	}
 	return nil
+}
+
+func LogHTTPError(logger logrus.FieldLogger, r *http.Request, err error) {
+	logger.WithFields(logrus.Fields{
+		"uri":    r.URL.Path,
+		"method": r.Method,
+	}).Error(err)
 }

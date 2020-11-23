@@ -7,6 +7,7 @@ import (
 	"github.com/Elephmoon/anagramDictionary/internal/backend/word/mocks"
 	"github.com/Elephmoon/anagramDictionary/internal/models"
 	"github.com/bxcodec/faker/v3"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"net/http"
@@ -183,6 +184,7 @@ func TestWordHandler_delete(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &WordHandler{
+				Logger:      logrus.New(),
 				WordUsecase: tt.fields.WordUsecase,
 			}
 			handler := http.HandlerFunc(w.delete)
@@ -262,6 +264,7 @@ func TestWordHandler_addWords(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &WordHandler{
+				Logger:      logrus.New(),
 				WordUsecase: tt.fields.WordUsecase,
 			}
 			handler := http.HandlerFunc(w.addWords)
@@ -337,6 +340,7 @@ func TestWordHandler_searchAnagram(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &WordHandler{
+				Logger:      logrus.New(),
 				WordUsecase: tt.fields.WordUsecase,
 			}
 			handler := http.HandlerFunc(w.searchAnagram)
