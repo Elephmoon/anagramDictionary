@@ -16,6 +16,7 @@ type DBConfig struct {
 }
 
 type APIConfig struct {
+	Host string
 	Port string
 }
 
@@ -29,6 +30,7 @@ func LoadConfig() Config {
 			Password: os.Getenv(`DB_PASSWORD`),
 		},
 		APIConfig: APIConfig{
+			Host: os.Getenv(`API_HOST`),
 			Port: os.Getenv(`API_PORT`),
 		},
 	}
