@@ -54,3 +54,33 @@ func Test_generateAnagramAnswer(t *testing.T) {
 		})
 	}
 }
+
+func Test_validateCreateReq(t *testing.T) {
+	type args struct {
+		words *models.CreateReq
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name:    "no error",
+			args:    args{words: &models.CreateReq{Words: []string{"asdasdasdasd"}}},
+			wantErr: false,
+		},
+		{
+			name:    "return validator err",
+			args:    args{&models.CreateReq{}},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := validateCreateReq(tt.args.words)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("validateCreateReq() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
