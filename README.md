@@ -1,5 +1,5 @@
 # anagramDictionary
-The application is started using [docker-compose](https://docs.docker.com/compose/).  
+The application is started using [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/).  
 ## First step
 Before start you need copy from .env.example to .env and edit it.
 ### Table with parameters from .env file
