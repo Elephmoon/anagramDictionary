@@ -83,5 +83,5 @@ func LogHTTPError(logger logrus.FieldLogger, r *http.Request, err error) {
 	logger.WithFields(logrus.Fields{
 		"uri":    r.URL.Path,
 		"method": r.Method,
-	}).Error(err)
+	}).Error(err.Error())
 }
