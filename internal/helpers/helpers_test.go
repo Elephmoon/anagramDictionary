@@ -69,29 +69,37 @@ func TestSortWord(t *testing.T) {
 		word string
 	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name    string
+		args    args
+		want    string
+		wantErr bool
 	}{
 		{
 			name: "return abcd",
 			args: args{
 				word: "bcad",
 			},
-			want: "abcd",
+			want:    "abcd",
+			wantErr: false,
 		},
 		{
 			name: "return elov",
 			args: args{
 				word: "love",
 			},
-			want: "elov",
+			want:    "elov",
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SortWord(tt.args.word); got != tt.want {
-				t.Errorf("SortWord() = %v, want %v", got, tt.want)
+			got, err := SortWord(tt.args.word)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("SortWord() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("SortWord() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

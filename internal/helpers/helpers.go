@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -11,9 +12,11 @@ import (
 )
 
 const (
-	KeyContentType  = "Content-Type"
-	JSONContentType = "application/json"
-	defaultLimit    = 50
+	KeyContentType      = "Content-Type"
+	JSONContentType     = "application/json"
+	defaultLimit        = 50
+	maxWordLength       = 100
+	wordTooLengthFormat = "word: %s is too length. max length is %d"
 )
 
 var (
@@ -54,10 +57,13 @@ func GetQueryParams(offset, limit string) (*QueryParams, error) {
 	}, nil
 }
 
-func SortWord(word string) string {
+func SortWord(word string) (string, error) {
+	if len(word) > maxWordLength {
+		return "", fmt.Errorf(wordTooLengthFormat, word, maxWordLength)
+	}
 	splitWord := strings.Split(word, "")
 	sort.Strings(splitWord)
-	return strings.Join(splitWord, "")
+	return strings.Join(splitWord, ""), nil
 }
 
 func GenerateHTTPErrorResp(w http.ResponseWriter, err error) error {
