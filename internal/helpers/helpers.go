@@ -63,11 +63,11 @@ func GenerateHTTPErrorResp(w http.ResponseWriter, err error) error {
 	rsp := HTTPErrorResponse{
 		Error: err.Error(),
 	}
+	w.WriteHeader(http.StatusBadRequest)
 	w.Header().Add(KeyContentType, JSONContentType)
 	err = json.NewEncoder(w).Encode(rsp)
 	if err != nil {
 		return err
 	}
-	w.WriteHeader(http.StatusBadRequest)
 	return nil
 }
