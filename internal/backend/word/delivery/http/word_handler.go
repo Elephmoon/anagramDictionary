@@ -6,16 +6,19 @@ import (
 	"github.com/Elephmoon/anagramDictionary/internal/helpers"
 	"github.com/Elephmoon/anagramDictionary/internal/models"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
 type WordHandler struct {
 	WordUsecase word.Usecase
+	Logger      logrus.FieldLogger
 }
 
-func NewWordHandler(router *mux.Router, wordUsecase word.Usecase) {
+func NewWordHandler(router *mux.Router, wordUsecase word.Usecase, logger logrus.FieldLogger) {
 	handler := WordHandler{
 		WordUsecase: wordUsecase,
+		Logger:      logger,
 	}
 	wordSubRouter := router.PathPrefix("/words").Subrouter()
 	wordSubRouter.HandleFunc("", handler.get).Methods("GET")
@@ -34,14 +37,18 @@ func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
 		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			helpers.LogHTTPError(wh.Logger, r, err)
 			return
 		}
+		helpers.LogHTTPError(wh.Logger, r, err)
 		return
 	}
 	w.Header().Add(helpers.KeyContentType, helpers.JSONContentType)
 	err = json.NewEncoder(w).Encode(data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		helpers.LogHTTPError(wh.Logger, r, err)
+		return
 	}
 }
 
@@ -51,8 +58,10 @@ func (wh *WordHandler) delete(w http.ResponseWriter, r *http.Request) {
 		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			helpers.LogHTTPError(wh.Logger, r, err)
 			return
 		}
+		helpers.LogHTTPError(wh.Logger, r, err)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -65,8 +74,10 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			helpers.LogHTTPError(wh.Logger, r, err)
 			return
 		}
+		helpers.LogHTTPError(wh.Logger, r, err)
 		return
 	}
 	err = wh.WordUsecase.AddWords(createReq)
@@ -74,8 +85,10 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			helpers.LogHTTPError(wh.Logger, r, err)
 			return
 		}
+		helpers.LogHTTPError(wh.Logger, r, err)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -87,14 +100,17 @@ func (wh *WordHandler) searchAnagram(w http.ResponseWriter, r *http.Request) {
 		err := helpers.GenerateHTTPErrorResp(w, err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			helpers.LogHTTPError(wh.Logger, r, err)
 			return
 		}
+		helpers.LogHTTPError(wh.Logger, r, err)
 		return
 	}
 	w.Header().Add(helpers.KeyContentType, helpers.JSONContentType)
 	err = json.NewEncoder(w).Encode(anagramResponse)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		helpers.LogHTTPError(wh.Logger, r, err)
 		return
 	}
 }

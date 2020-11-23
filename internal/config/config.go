@@ -2,7 +2,12 @@ package config
 
 import "os"
 
+type Debug string
+
+const On Debug = "true"
+
 type Config struct {
+	AppConfig AppConfig
 	DBConfig  DBConfig
 	APIConfig APIConfig
 }
@@ -20,8 +25,15 @@ type APIConfig struct {
 	Port string
 }
 
+type AppConfig struct {
+	Debug Debug
+}
+
 func LoadConfig() Config {
 	return Config{
+		AppConfig: AppConfig{
+			Debug: Debug(os.Getenv(`DEBUG`)),
+		},
 		DBConfig: DBConfig{
 			Host:     os.Getenv(`DB_HOST`),
 			Port:     os.Getenv(`DB_PORT`),
