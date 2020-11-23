@@ -22,4 +22,5 @@ In the directory with the project
 `dictionary       | time="2020-11-23T17:16:58Z" level=info msg="server start at :3000" program=anagramDictionary`  
 3. Now you can go to http://localhost:3000/swagger-ui/ and use the application 
 ## Using API without swagger-ui
-If you want to send requests directly to the application, you need to use **http://localhost:3000/api/v1/** also endpoints and data types from specification
+If you want to send requests directly to the application, you need to use **http://localhost:3000/api/v1/** also endpoints and data types from specification  
+You can send requests using [Postman](https://www.postman.com/) or other applications
