@@ -4,8 +4,6 @@ ENV PROJECT_PATH=/anagramDictionary
 ENV PATH=$PATH:$PROJECT_PATH/build
 ENV CGO_ENABLED=0
 
-RUN apk add --no-cache ca-certificates git make bash protobuf
-
 RUN mkdir -p $PROJECT_PATH
 COPY . $PROJECT_PATH
 WORKDIR $PROJECT_PATH
