@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/Elephmoon/anagramDictionary/internal/backend/word/mocks"
 	"github.com/Elephmoon/anagramDictionary/internal/models"
-	"github.com/bxcodec/faker"
+	"github.com/bxcodec/faker/v3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"net/http"
