@@ -52,7 +52,10 @@ func (wu *wordUsecase) AddWords(words *models.CreateReq) error {
 	wrds := make([]models.Word, len(words.Words))
 	for i, wrd := range words.Words {
 		wrds[i].Word = words.Words[i]
-		wrds[i].SortedWord = helpers.SortWord(strings.ToLower(wrd))
+		wrds[i].SortedWord, err = helpers.SortWord(strings.ToLower(wrd))
+		if err != nil {
+			return err
+		}
 	}
 	return wu.wordRepo.AddDictionary(wrds)
 }
@@ -62,7 +65,11 @@ func (wu *wordUsecase) AnagramSearch(word string) (models.AnagramResponse, error
 	if word == "" {
 		return answer, errWordEmpty
 	}
-	words, err := wu.wordRepo.AnagramSearch(helpers.SortWord(word))
+	sortedWord, err := helpers.SortWord(word)
+	if err != nil {
+		return answer, err
+	}
+	words, err := wu.wordRepo.AnagramSearch(sortedWord)
 	if err != nil {
 		return answer, err
 	}

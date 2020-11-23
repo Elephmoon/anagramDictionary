@@ -34,8 +34,7 @@ func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
 
 	data, err := wh.WordUsecase.ShowDictionary(offset, limit)
 	if err != nil {
-		err := helpers.GenerateHTTPErrorResp(w, err)
-		if err != nil {
+		if err := helpers.GenerateHTTPErrorResp(w, err); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			helpers.LogHTTPError(wh.Logger, r, err)
 			return
@@ -55,8 +54,7 @@ func (wh *WordHandler) get(w http.ResponseWriter, r *http.Request) {
 func (wh *WordHandler) delete(w http.ResponseWriter, r *http.Request) {
 	err := wh.WordUsecase.DeleteWord(r.URL.Query().Get("word"))
 	if err != nil {
-		err := helpers.GenerateHTTPErrorResp(w, err)
-		if err != nil {
+		if err := helpers.GenerateHTTPErrorResp(w, err); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			helpers.LogHTTPError(wh.Logger, r, err)
 			return
@@ -71,8 +69,7 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 	createReq := &models.CreateReq{}
 	err := json.NewDecoder(r.Body).Decode(createReq)
 	if err != nil {
-		err := helpers.GenerateHTTPErrorResp(w, err)
-		if err != nil {
+		if err := helpers.GenerateHTTPErrorResp(w, err); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			helpers.LogHTTPError(wh.Logger, r, err)
 			return
@@ -82,8 +79,7 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 	}
 	err = wh.WordUsecase.AddWords(createReq)
 	if err != nil {
-		err := helpers.GenerateHTTPErrorResp(w, err)
-		if err != nil {
+		if err := helpers.GenerateHTTPErrorResp(w, err); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			helpers.LogHTTPError(wh.Logger, r, err)
 			return
@@ -97,8 +93,7 @@ func (wh *WordHandler) addWords(w http.ResponseWriter, r *http.Request) {
 func (wh *WordHandler) searchAnagram(w http.ResponseWriter, r *http.Request) {
 	anagramResponse, err := wh.WordUsecase.AnagramSearch(r.URL.Query().Get("word"))
 	if err != nil {
-		err := helpers.GenerateHTTPErrorResp(w, err)
-		if err != nil {
+		if err := helpers.GenerateHTTPErrorResp(w, err); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			helpers.LogHTTPError(wh.Logger, r, err)
 			return
